@@ -19,6 +19,7 @@ Item {
   Text {
     id: icon
     text: ""
+    visible: root?.title
     color: "#f5c2e7"
     font.family: "Symbols Nerd Font Mono"
     font.pixelSize: 16
