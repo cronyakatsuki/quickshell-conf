@@ -1,11 +1,11 @@
 import QtQuick
 import Quickshell.Io
+import qs.services
 
 Item {
   id: root
-  property real spacing: 4
-  implicitWidth: icon.implicitWidth + value.implicitWidth + spacing
-  implicitHeight: Math.max(icon.implicitHeight, value.implicitHeight)
+  implicitWidth: widget.implicitWidth
+  implicitHeight: widget.implicitHeight
 
   property real usage: 0
 
@@ -37,32 +37,10 @@ Item {
     onTriggered: stat.reload()
   }
 
-  Text {
-    id: icon
-    text: "󰍛"
-    color: "#89b4fa"
-    font.family: "Symbols Nerd Font Mono"
-    font.pixelSize: 16
-    anchors.verticalCenter: parent.verticalCenter
-  }
-
-  Text {
-    id: value
-    text: Math.round(root.usage * 100).toString().padStart(2, "0") + "%"
-    color: "#89b4fa"
-    font.family: "Monaspace Neon Frozen"
-    font.pixelSize: 16
-    font.bold: true
-    anchors.left: icon.right
-    anchors.leftMargin: root.spacing
-    anchors.verticalCenter: parent.verticalCenter
-  }
-  
-  Rectangle {
-    width: root.implicitWidth
-    height: 2
-    color: "#89b4fa"
-    anchors.horizontalCenter: parent.horizontalCenter
-    y: value.height - height
+  Widget {
+    id: widget
+    glyph: "󰍛"
+    label: Math.round(root.usage * 100).toString().padStart(2, "0") + "%"
+    accent: Theme.blue
   }
 }

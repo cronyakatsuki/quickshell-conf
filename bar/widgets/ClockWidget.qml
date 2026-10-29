@@ -4,9 +4,9 @@ import qs.services
 Text {
   id: root
   text: Time.time
-  color: "#b4befe"
-  font.family: "Monaspace Neon Frozen"
-  font.pixelSize: 16
+  color: Theme.lavender
+  font.family: Theme.fontText
+  font.pixelSize: Theme.fontSize
   font.bold: true
 
   property real underlineThickness: 2

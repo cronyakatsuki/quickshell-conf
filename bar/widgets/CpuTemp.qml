@@ -1,12 +1,12 @@
 import Quickshell.Io
 import QtQuick
+import qs.services
 
 Item {
   id: root
 
-  property real spacing: 4
-  implicitWidth: icon.implicitWidth + value.implicitWidth + spacing
-  implicitHeight: Math.max(icon.implicitHeight, value.implicitHeight)
+  implicitWidth: widget.implicitWidth
+  implicitHeight: widget.implicitHeight
 
   property string tempPath: ""
   property real temp: 0
@@ -31,33 +31,11 @@ Item {
     onLoaded: root.temp = parseFloat(stat.text()) / 1000
   }
 
-  Text {
-    id: icon
-    text: ""
-    color: "#fab387"
-    font.family: "Symbols Nerd Font Mono"
-    font.pixelSize: 16
-    anchors.verticalCenter: parent.verticalCenter
-  }
-
-  Text {
-    id: value
-    text: root.tempPath === "" ? "--°C" : Math.round(root.temp) + "°C"
-    color: "#fab387"
-    font.family: "Monaspace Neon Frozen"
-    font.pixelSize: 16
-    font.bold: true
-    anchors.left: icon.right
-    anchors.leftMargin: root.spacing
-    anchors.verticalCenter: parent.verticalCenter
-  }
-
-  Rectangle {
-    width: root.implicitWidth
-    height: 2
-    color: "#fab387"
-    anchors.horizontalCenter: parent.horizontalCenter
-    y: value.height - height
+  Widget {
+    id: widget
+    glyph: ""
+    label: root.tempPath === "" ? "--°C" : Math.round(root.temp) + "°C"
+    accent: Theme.peach
   }
 
   Timer {

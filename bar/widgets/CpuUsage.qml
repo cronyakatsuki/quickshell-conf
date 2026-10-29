@@ -1,11 +1,12 @@
 import QtQuick
 import Quickshell.Io
+import qs.services
 
 Item {
   id: root
-  property real spacing: 4
-  implicitWidth: icon.implicitWidth + value.implicitWidth + spacing
-  implicitHeight: Math.max(icon.implicitHeight, value.implicitHeight)
+
+  implicitWidth: widget.implicitWidth
+  implicitHeight: widget.implicitHeight
 
   property real usage: 0
 
@@ -31,27 +32,6 @@ Item {
     prevIdle = idle;
   }
 
-  Text {
-    id: icon
-    text: "󰻠"
-    color: "#a6e3a1"
-    font.family: "Symbols Nerd Font Mono"
-    font.pixelSize: 16
-    anchors.verticalCenter: parent.verticalCenter
-  }
-
-  Text {
-    id: value
-    text: Math.round(root.usage * 100).toString().padStart(2, "0") + "%"
-    color: "#a6e3a1"
-    font.family: "Monaspace Neon Frozen"
-    font.pixelSize: 16
-    font.bold: true
-    anchors.left: icon.right
-    anchors.leftMargin: root.spacing
-    anchors.verticalCenter: parent.verticalCenter
-  }
-
   FileView {
     id: stat
     path: "/proc/stat"
@@ -59,6 +39,13 @@ Item {
     preload: false
     printErrors: false
     onLoaded: root.update()
+  }
+
+  Widget {
+    id: widget
+    glyph: "󰻠"
+    label: Math.round(root.usage * 100).toString().padStart(2, "0") + "%"
+    accent: Theme.green
   }
 
   Timer {
@@ -70,13 +57,5 @@ Item {
       if (root.prevTotal === 0)
         root.update();  // prime the baseline on first tick
     }
-  }
-
-  Rectangle {
-    width: root.implicitWidth
-    height: 2
-    color: "#a6e3a1"
-    anchors.horizontalCenter: parent.horizontalCenter
-    y: value.height - height
   }
 }
