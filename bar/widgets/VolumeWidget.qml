@@ -1,4 +1,5 @@
 import QtQuick
+import Quickshell
 import Quickshell.Services.Pipewire
 import qs.services
 
@@ -30,5 +31,23 @@ Item {
 
   VolumePanel {
     id: popup
+  }
+
+  PanelWindow {
+    anchors {
+      top: true
+      bottom: true
+      left: true
+      right: true
+    }
+    exclusionMode: ExclusionMode.Ignore
+    color: "transparent"
+
+    visible: popup.visible
+    MouseArea {
+      id: dismissArea
+      anchors.fill: parent
+      onClicked: popup.visible = false
+    }
   }
 }
