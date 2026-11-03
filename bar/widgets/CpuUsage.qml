@@ -36,7 +36,7 @@ Item {
     id: stat
     path: "/proc/stat"
     blockLoading: true   // read synchronously, no stale-then-update flicker
-    preload: false
+    preload: true
     printErrors: false
     onLoaded: root.update()
   }
