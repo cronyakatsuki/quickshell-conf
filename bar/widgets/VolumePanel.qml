@@ -10,7 +10,8 @@ PopupWindow {
 
   visible: false
   implicitWidth: 280
-  implicitHeight: content.implicitHeight + 2 * content.anchors.margins
+  implicitHeight: content.implicitHeight + 2 * content.anchors.margins + 75
+
   anchor {
     item: buttonArea
     edges: Edges.Bottom
@@ -36,7 +37,9 @@ PopupWindow {
 
     ColumnLayout {
       id: content
-      anchors.fill: parent
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
       anchors.margins: 20
       spacing: 5
       ComboBox {
