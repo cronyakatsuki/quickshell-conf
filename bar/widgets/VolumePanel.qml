@@ -51,13 +51,21 @@ PopupWindow {
         onActivated: index => Pipewire.preferredDefaultAudioSink = root.outputNodes[index]
       }
 
-      Slider {
-        id: outputSlider
-        Layout.fillWidth: true
-        from: 0
-        to: 1
-        value: root.volume
-        onMoved: root.sink.audio.volume = value
+      RowLayout {
+        Widget {
+          id: volumeText
+          label: Math.round(root.volume * 100).toString().padStart(2, "0") + "%"
+          accent: Theme.text
+          showUnderline: false
+        }
+        Slider {
+          id: outputSlider
+          Layout.fillWidth: true
+          from: 0
+          to: 1
+          value: root.volume
+          onMoved: root.sink.audio.volume = value
+        }
       }
     }
   }
