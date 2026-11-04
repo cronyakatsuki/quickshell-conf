@@ -70,16 +70,13 @@ PopupWindow {
         Widget {
           id: muteButton
           glyph: root.muted ? "󰖁" : root.volume > 0.66 ? "󰕾" : root.volume > 0.33 ? "󰖀" : "󰕿"
-          accent: Theme.text
+          accent: root?.muted ? Theme.red : Theme.text
           showUnderline: false
 
           MouseArea {
             id: muteArea
             anchors.fill: parent
-            onClicked: {
-              root.sink.audio.muted = !root.muted;
-              muteButton.accent = root?.muted ? Theme.red : Theme.text;
-            }
+            onClicked: root.sink.audio.muted = !root.muted
           }
         }
       }
