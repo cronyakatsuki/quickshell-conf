@@ -29,6 +29,7 @@ PopupWindow {
 
     readonly property PwNode sink: Pipewire.defaultAudioSink
     readonly property real volume: sink?.audio.volume ?? 0
+    readonly property bool muted: sink?.audio.muted ?? false
 
     readonly property list<PwNode> outputNodes: {
       const nodes = Pipewire.nodes.values.filter(n => n.isSink && !n.isStream);
@@ -65,6 +66,21 @@ PopupWindow {
           to: 1
           value: root.volume
           onMoved: root.sink.audio.volume = value
+        }
+        Widget {
+          id: muteButton
+          glyph: root.muted ? "󰖁" : root.volume > 0.66 ? "󰕾" : root.volume > 0.33 ? "󰖀" : "󰕿"
+          accent: Theme.text
+          showUnderline: false
+
+          MouseArea {
+            id: muteArea
+            anchors.fill: parent
+            onClicked: {
+              root.sink.audio.muted = !root.muted;
+              muteButton.accent = root?.muted ? Theme.red : Theme.text;
+            }
+          }
         }
       }
     }
