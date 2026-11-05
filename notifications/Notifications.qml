@@ -109,82 +109,17 @@ Scope {
           Layout.fillWidth: true
           Layout.preferredHeight: Math.min(Math.max(contentHeight, 1), 500)
 
-          delegate: Rectangle {
-            id: card
-            required property string summary
-            required property string body
-            required property string appName
-            required property string time
-            required property string image
-            required property string appIcon
-            required property int index
-
-            width: historyList.width
-            height: cardLayout.implicitHeight + 20
-            radius: 8
-            color: Theme.crust
-            border.width: 2
-            border.color: Theme.lavender
-
-            RowLayout {
-              id: cardLayout
-              anchors.fill: parent
-              anchors.margins: 10
-              spacing: 10
-
-              Image {
-                Layout.preferredHeight: 36
-                Layout.preferredWidth: 36
-                Layout.alignment: Qt.AlignTop
-                fillMode: Image.PreserveAspectFit
-                visible: source.toString() !== ""
-                source: image || appIcon || ""
-              }
-
-              ColumnLayout {
-                Layout.fillWidth: true
-                spacing: 2
-
-                Text {
-                  Layout.fillWidth: true
-                  text: summary
-                  color: Theme.peach
-                  font.family: Theme.fontText
-                  font.pixelSize: Theme.fontSize
-                  font.bold: true
-                  elide: Text.ElideRight
-                }
-                Text {
-                  Layout.fillWidth: true
-                  visible: text !== ""
-                  text: body
-                  color: Theme.text
-                  font.family: Theme.fontText
-                  font.pixelSize: Theme.fontSize - 1
-                  font.bold: false
-                  wrapMode: Text.WordWrap
-                }
-                Text {
-                  Layout.fillWidth: true
-                  text: appName
-                  color: Theme.surface2
-                  font.family: Theme.fontText
-                  font.pixelSize: Theme.fontSize - 1
-                  font.bold: false
-                  wrapMode: Text.WordWrap
-                }
-              }
-
-              Text {
-                Layout.fillWidth: true
-                Layout.alignment: Qt.AlignTop
-                text: time
-                color: Theme.surface2
-                font.family: Theme.fontText
-                font.pixelSize: Theme.fontSize - 1
-                font.bold: false
-              }
-            }
+          delegate: NotificationCard {
+            id: listCard
+            cardImage: image
+            cardAppIcon: appIcon
+            cardSummary: summary
+            cardBody: body
+            cardAppName: appName
+            cardTime: time
+            cardBorder: Theme.lavender
+            cardBg: Theme.crust
+            notificationWidth: historyList.width
 
             MouseArea {
               anchors.fill: parent
@@ -209,7 +144,6 @@ Scope {
 
     implicitWidth: 380
     implicitHeight: Math.max(1, column.implicitHeight)
-    // color: Theme.base
     color: "transparent"
 
     exclusionMode: ExclusionMode.Ignore
@@ -222,86 +156,29 @@ Scope {
       Repeater {
         model: server.trackedNotifications
 
-        delegate: Rectangle {
-          id: card
+        delegate: NotificationCard {
+          id: singleNotification
           required property var modelData
 
+          notificationWidth: column.width
+          cardImage: modelData.image
+          cardAppIcon: modelData.appIcon
+          cardSummary: modelData.summary
+          cardBody: modelData.body
+          cardAppName: modelData.appName
+          cardTime: Qt.formatDateTime(new Date(), "HH:mm")
+          cardBg: Theme.base
+          cardBorder: modelData.urgency === NotificationUrgency.Critical ? Theme.red : Theme.lavender
+
           Timer {
-            running: card.modelData.urgency !== NotificationUrgency.Critical
+            running: singleNotification.modelData.urgency !== NotificationUrgency.Critical
             interval: 5000
-            onTriggered: card.modelData.dismiss()
-          }
-
-          Layout.fillWidth: true
-          Layout.preferredHeight: layout.implicitHeight + 20
-          radius: 8
-          color: Theme.base
-          border.width: 2
-          border.color: modelData.urgency === NotificationUrgency.Critical ? Theme.red : Theme.lavender
-
-          RowLayout {
-            id: layout
-            anchors.fill: parent
-            anchors.margins: 10
-            spacing: 10
-
-            Image {
-              Layout.preferredHeight: 36
-              Layout.preferredWidth: 36
-              Layout.alignment: Qt.AlignTop
-              fillMode: Image.PreserveAspectFit
-              visible: source.toString() !== ""
-              source: card.modelData.image || card.modelData.appIcon || ""
-            }
-
-            ColumnLayout {
-              Layout.fillWidth: true
-              spacing: 2
-
-              Text {
-                Layout.fillWidth: true
-                text: card.modelData.summary
-                color: Theme.peach
-                font.family: Theme.fontText
-                font.pixelSize: Theme.fontSize
-                font.bold: true
-                elide: Text.ElideRight
-              }
-              Text {
-                Layout.fillWidth: true
-                visible: text !== ""
-                text: card.modelData.body
-                color: Theme.text
-                font.family: Theme.fontText
-                font.pixelSize: Theme.fontSize - 1
-                font.bold: false
-                wrapMode: Text.WordWrap
-              }
-              Text {
-                Layout.fillWidth: true
-                text: card.modelData.appName
-                color: Theme.surface2
-                font.family: Theme.fontText
-                font.pixelSize: Theme.fontSize - 1
-                font.bold: false
-                wrapMode: Text.WordWrap
-              }
-            }
-
-            Text {
-              Layout.fillWidth: true
-              Layout.alignment: Qt.AlignTop
-              text: Qt.formatDateTime(new Date(), "HH:mm")
-              color: Theme.surface2
-              font.family: Theme.fontText
-              font.pixelSize: Theme.fontSize - 1
-              font.bold: false
-            }
+            onTriggered: singleNotification.modelData.dismiss()
           }
 
           MouseArea {
             anchors.fill: parent
-            onClicked: card.modelData.dismiss()
+            onClicked: singleNotification.modelData.dismiss()
           }
         }
       }
