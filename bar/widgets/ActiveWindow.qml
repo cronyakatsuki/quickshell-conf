@@ -6,7 +6,11 @@ Text {
   id: title
   text: {
     const toplevel = ToplevelManager.activeToplevel;
-    return toplevel ? toplevel.title : "";
+    if (toplevel) {
+      return toplevel.title.length > 50 ? toplevel.title.slice(0, 47) + "…" : toplevel.title;
+    } else {
+      return "";
+    }
   }
 
   color: Theme.lavender
