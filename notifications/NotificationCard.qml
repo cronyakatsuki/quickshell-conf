@@ -56,7 +56,7 @@ Rectangle {
         visible: text !== ""
         text: card.cardBody
         color: Theme.text
-        font.family: Theme.fontText
+        font.family: "Adwaita Sans"
         font.pixelSize: Theme.fontSize - 1
         font.bold: false
         wrapMode: Text.WordWrap
