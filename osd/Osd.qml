@@ -3,9 +3,65 @@ import Quickshell.Wayland
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Services.Pipewire
+import Quickshell.Services.UPower
 import qs.services
 
 Scope {
+  PanelWindow {
+    id: powerOsd
+    visible: false
+    color: "transparent"
+    exclusionMode: ExclusionMode.Ignore
+    WlrLayershell.layer: WlrLayer.Overlay
+
+    anchors {
+      // top: true
+      left: true
+      right: true
+      bottom: true
+    }
+    margins {
+      bottom: 500
+    }
+
+    Timer {
+      id: hidePowerTimer
+      interval: 1500
+      onTriggered: powerOsd.visible = false
+    }
+
+    Connections {
+      target: PowerProfiles
+      function onProfileChanged() {
+        powerOsd.visible = true;
+        hidePowerTimer.restart();
+      }
+    }
+    mask: Region {
+      item: perfbox
+    }
+
+    Rectangle {
+      id: perfbox
+      anchors.horizontalCenter: parent.horizontalCenter
+      implicitWidth: 300
+      implicitHeight: 100
+      radius: 12
+      color: Theme.base
+      border.color: Theme.lavender
+      border.width: 2
+
+      Text {
+        text: PowerProfile.toString(PowerProfiles.profile)
+        color: Theme.text
+        font.family: Theme.fontText
+        font.pixelSize: Theme.fontSize + 20
+        font.bold: true
+        anchors.centerIn: parent
+      }
+    }
+  }
+
   PanelWindow {
     id: volumeOsd
 
