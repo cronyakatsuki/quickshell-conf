@@ -46,84 +46,90 @@ Scope {
     }
   }
 
-  // Notification Center
-  PanelWindow {
-    visible: root.centerOpen
-    anchors {
-      top: true
-      right: true
-    }
-    margins {
-      top: 12
-      right: 12
-    }
+  Variants {
+    model: Quickshell.screens
 
-    implicitWidth: 380
-    implicitHeight: centerCol.implicitHeight + 24
-    // color: Theme.base
-    color: "transparent"
+    // Notification Center
+    PanelWindow {
+      required property var modelData
+      screen: modelData
+      visible: root.centerOpen
+      anchors {
+        top: true
+        right: true
+      }
+      margins {
+        top: 12
+        right: 12
+      }
 
-    exclusionMode: ExclusionMode.Ignore
+      implicitWidth: 380
+      implicitHeight: centerCol.implicitHeight + 24
+      // color: Theme.base
+      color: "transparent"
 
-    Rectangle {
-      anchors.fill: parent
-      radius: 10
-      color: Theme.base
-      border.width: 2
-      border.color: Theme.lavender
+      exclusionMode: ExclusionMode.Ignore
 
-      ColumnLayout {
-        id: centerCol
+      Rectangle {
         anchors.fill: parent
-        anchors.margins: 12
-        spacing: 14
+        radius: 10
+        color: Theme.base
+        border.width: 2
+        border.color: Theme.lavender
 
-        RowLayout {
-          Layout.fillWidth: true
-          Text {
+        ColumnLayout {
+          id: centerCol
+          anchors.fill: parent
+          anchors.margins: 12
+          spacing: 14
+
+          RowLayout {
             Layout.fillWidth: true
-            text: "Notifications"
-            color: Theme.text
-            font.family: Theme.fontText
-            font.bold: true
-            font.pixelSize: Theme.fontSize + 2
-          }
+            Text {
+              Layout.fillWidth: true
+              text: "Notifications"
+              color: Theme.text
+              font.family: Theme.fontText
+              font.bold: true
+              font.pixelSize: Theme.fontSize + 2
+            }
 
-          Text {
-            text: "Clear All"
-            visible: history.count > 0
-            color: Theme.red
-            font.family: Theme.fontText
-            font.pixelSize: Theme.fontSize - 1
-            MouseArea {
-              anchors.fill: parent
-              onClicked: history.clear()
+            Text {
+              text: "Clear All"
+              visible: history.count > 0
+              color: Theme.red
+              font.family: Theme.fontText
+              font.pixelSize: Theme.fontSize - 1
+              MouseArea {
+                anchors.fill: parent
+                onClicked: history.clear()
+              }
             }
           }
-        }
-        ListView {
-          id: historyList
-          model: history
-          clip: true
-          spacing: 10
-          Layout.fillWidth: true
-          Layout.preferredHeight: Math.min(Math.max(contentHeight, 1), 500)
+          ListView {
+            id: historyList
+            model: history
+            clip: true
+            spacing: 10
+            Layout.fillWidth: true
+            Layout.preferredHeight: Math.min(Math.max(contentHeight, 1), 500)
 
-          delegate: NotificationCard {
-            id: listCard
-            cardImage: image
-            cardAppIcon: appIcon
-            cardSummary: summary
-            cardBody: body
-            cardAppName: appName
-            cardTime: time
-            cardBorder: Theme.lavender
-            cardBg: Theme.crust
-            notificationWidth: historyList.width
+            delegate: NotificationCard {
+              id: listCard
+              cardImage: image
+              cardAppIcon: appIcon
+              cardSummary: summary
+              cardBody: body
+              cardAppName: appName
+              cardTime: time
+              cardBorder: Theme.lavender
+              cardBg: Theme.crust
+              notificationWidth: historyList.width
 
-            MouseArea {
-              anchors.fill: parent
-              onClicked: history.remove(index)
+              MouseArea {
+                anchors.fill: parent
+                onClicked: history.remove(index)
+              }
             }
           }
         }
@@ -131,54 +137,60 @@ Scope {
     }
   }
 
-  // Single notification
-  PanelWindow {
-    anchors {
-      top: true
-      right: true
-    }
-    margins {
-      top: 12
-      right: 12
-    }
+  Variants {
+    model: Quickshell.screens
 
-    implicitWidth: 380
-    implicitHeight: Math.max(1, column.implicitHeight)
-    color: "transparent"
+    // Single notification
+    PanelWindow {
+      required property var modelData
+      screen: modelData
+      anchors {
+        top: true
+        right: true
+      }
+      margins {
+        top: 12
+        right: 12
+      }
 
-    exclusionMode: ExclusionMode.Ignore
+      implicitWidth: 380
+      implicitHeight: Math.max(1, column.implicitHeight)
+      color: "transparent"
 
-    ColumnLayout {
-      id: column
-      width: parent.width
-      spacing: 14
+      exclusionMode: ExclusionMode.Ignore
 
-      Repeater {
-        model: server.trackedNotifications
+      ColumnLayout {
+        id: column
+        width: parent.width
+        spacing: 14
 
-        delegate: NotificationCard {
-          id: singleNotification
-          required property var modelData
+        Repeater {
+          model: server.trackedNotifications
 
-          notificationWidth: column.width
-          cardImage: modelData.image
-          cardAppIcon: modelData.appIcon
-          cardSummary: modelData.summary
-          cardBody: modelData.body
-          cardAppName: modelData.appName
-          cardTime: Qt.formatDateTime(new Date(), "HH:mm")
-          cardBg: Theme.base
-          cardBorder: modelData.urgency === NotificationUrgency.Critical ? Theme.red : Theme.lavender
+          delegate: NotificationCard {
+            id: singleNotification
+            required property var modelData
 
-          Timer {
-            running: singleNotification.modelData.urgency !== NotificationUrgency.Critical
-            interval: 5000
-            onTriggered: singleNotification.modelData.dismiss()
-          }
+            notificationWidth: column.width
+            cardImage: modelData.image
+            cardAppIcon: modelData.appIcon
+            cardSummary: modelData.summary
+            cardBody: modelData.body
+            cardAppName: modelData.appName
+            cardTime: Qt.formatDateTime(new Date(), "HH:mm")
+            cardBg: Theme.base
+            cardBorder: modelData.urgency === NotificationUrgency.Critical ? Theme.red : Theme.lavender
 
-          MouseArea {
-            anchors.fill: parent
-            onClicked: singleNotification.modelData.dismiss()
+            Timer {
+              running: singleNotification.modelData.urgency !== NotificationUrgency.Critical
+              interval: 5000
+              onTriggered: singleNotification.modelData.dismiss()
+            }
+
+            MouseArea {
+              anchors.fill: parent
+              onClicked: singleNotification.modelData.dismiss()
+            }
           }
         }
       }
