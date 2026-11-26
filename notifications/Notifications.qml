@@ -1,6 +1,7 @@
 import Quickshell
 import Quickshell.Io
 import Quickshell.Services.Notifications
+import Quickshell.Wayland
 import QtQuick
 import QtQuick.Layouts
 import qs.services
@@ -51,6 +52,7 @@ Scope {
 
     // Notification Center
     PanelWindow {
+      WlrLayershell.layer: WlrLayer.Overlay
       required property var modelData
       screen: modelData
       visible: root.centerOpen
@@ -142,6 +144,7 @@ Scope {
 
     // Single notification
     PanelWindow {
+      WlrLayershell.layer: WlrLayer.Overlay
       required property var modelData
       screen: modelData
       anchors {
